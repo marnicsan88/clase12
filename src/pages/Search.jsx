@@ -11,9 +11,9 @@ const useQuery = () => {
 export default function Search(){
     const [items,setItems] = useState([]);
     const [loading,isLoading] = useState(true);
-    const catName = useQuery().get("catName")
-    const catFilter = useQuery().get("categoryId")
-    const itemName = useQuery().get("itemName")
+    const catName = useQuery().get("catName") || "";
+    const catFilter = useQuery().get("categoryId") || "";
+    const itemName = useQuery().get("itemName") || "";
 
     const getCategoryRef = (categoryId) => {
         const db = getFirestore();
@@ -45,11 +45,12 @@ export default function Search(){
         });
     },[catFilter,itemName]);
 
-
     return(
         <>
             <div style={{padding:"0.5rem",paddingLeft:"2rem"}}>
-                <h2 style={{display:"inline"}}>{/([aeiou])$/g.test(catName.substring(catName.length-1))?`${catName}s`:`${catName}es`}</h2>
+                <h2 style={{display:"inline"}}>{catName?(
+                    /([aeiou])$/g.test(catName.substring(catName.length-1))?`${catName}s`:`${catName}es`):
+                    "Resultados"}</h2>
                 {itemName?<h3 style={{display:"inline"}}>&nbsp;para <strong>{itemName}</strong></h3>:""}
             </div>
             {loading?<Loading/>:<ItemListContainer items={items}/>}
